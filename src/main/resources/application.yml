@@ -1,0 +1,49 @@
+server:
+  port: 1003
+mybatis:
+  mapper-locations: classpath:mapper/*Mapper.xml
+  type-aliases-package: com.whz
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://172.17.21.209:3306/myblog?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf8
+      username: root
+      password: weihongzhe
+      driver-class-name: com.mysql.jdbc.Driver
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 10000
+      testOnBorrow: true
+      testOnReturn: false
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 100MB
+
+jwt:
+  secret: asdwzxcadf
+  expiration: 3600000
+  header: JWTHeaderName
+
+fdfs:
+  so-timeout: 2500
+  connect-timeout: 600
+  pool:
+    max-total: 153
+    max-wait-millis: 102
+  thumb-image:
+    width: 100
+    height: 100
+  tracker-list:
+    - 152.136.134.15:22122
+upload:
+  base-url: http://152.136.134.15/
+  allow-types:
+    - image/jpeg
+    - image/png
+    - image/bmp
+    - image/gif
+    - audio/mpeg

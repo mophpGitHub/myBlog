@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.whz.myblog.mapper.AboutMapper">
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.whz.myblog.pojo.About">
+        <id column="about_id" property="aboutId"/>
+        <result column="about_title" property="aboutTitle"/>
+        <result column="about_content" property="aboutContent"/>
+        <result column="about_read" property="aboutRead"/>
+        <result column="created_time" property="createdTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="version" property="version"/>
+        <result column="deleted" property="deleted"/>
+        <result column="enable" property="enable"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        about_id, about_title, about_content, about_read, created_time, update_time, version,deleted,enable
+    </sql>
+    <!--发布-->
+    <insert id="save" parameterType="com.whz.myblog.pojo.About">
+        insert into bl_about(about_title,about_content) values (
+             #{aboutTitle},#{aboutContent}
+        )
+    </insert>
+    <!--查询所有分页-->
+    <select id="getByPage" parameterType="com.whz.myblog.utils.Page" resultMap="BaseResultMap">
+        select
+        about_id,
+        about_title,
+        about_read,
+        created_time,
+        update_time,
+        enable
+        from bl_about
+        where  deleted = 0
+        <if test="params.aboutTitle!=null and params.aboutTitle!=''">
+            and about_title like CONCAT('%', #{params.aboutTitle}, '%')
+        </if>
+        <if test="sortColumn!=null and sortColumn!=''">
+            order by ${sortColumn} ${sortMethod}
+        </if>
+        limit #{index}, #{pageSize}
+    </select>
+    <!--查询所有限制查询一条-->
+    <select id="getAbout" resultMap="BaseResultMap">
+        select
+            about_id,
+            about_title,
+            about_content,
+            about_read,
+            created_time,
+            update_time,
+            version
+        from bl_about
+        where enable = 1
+        and deleted = 0
+        limit 1
+    </select>
+    <!--查询数量-->
+    <select id="getCountByPage" parameterType="com.whz.myblog.utils.Page" resultType="java.lang.Integer">
+        select
+        count(*)
+        from bl_about
+        where  deleted = 0
+        <if test="params.aboutTitle!=null and params.aboutTitle!=''">
+            and about_title like CONCAT('%', #{params.aboutTitle}, '%')
+        </if>
+    </select>
+    <!--启用-->
+    <update id="updateEnable" parameterType="com.whz.myblog.pojo.About">
+        update bl_about set
+        version = version + 1,
+        enable = #{enable}
+        where about_id = #{aboutId}
+        and version = #{version}
+    </update>
+    <!--更新id-->
+    <update id="updateById" parameterType="com.whz.myblog.pojo.About">
+        update bl_about set
+        version = version + 1
+        <if test="aboutTitle!=null and aboutTitle!=''">
+            ,about_title = #{aboutTitle}
+        </if>
+        <if test="aboutContent!=null and aboutContent!=''">
+            ,about_content = #{aboutContent}
+        </if>
+        <if test="aboutRead!=null">
+            ,about_read = #{aboutRead}
+        </if>
+        where about_id = #{aboutId}
+        and version = #{version}
+    </update>
+    <!--删除id-->
+    <update id="deleteById">
+        update bl_about set
+        deleted = 1
+        where about_id = #{id}
+    </update>
+    <!--查询id-->
+    <select id="getById" resultMap="BaseResultMap">
+        select
+            about_id,
+            about_title,
+            about_content,
+            about_read,
+            created_time,
+            update_time,
+            version
+        from bl_about
+        where about_id = #{aboutId}
+        and deleted = 0
+    </select>
+</mapper>
